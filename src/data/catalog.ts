@@ -137,7 +137,7 @@ export const scenes: Scene[] = [
     kicker: "İstanbul · Plak & Prodüksiyon",
     title: "CULTURE",
     track: tracks.nafile,
-    image: "/images/hero-night.jpg",
+    image: "/images/scenes/bg-home.jpg",
   },
   {
     id: "label",
@@ -146,7 +146,7 @@ export const scenes: Scene[] = [
     kicker: "Şirket",
     title: "CLTR",
     track: tracks.agladim,
-    image: "/images/studio.jpg",
+    image: "/images/scenes/bg-label.jpg",
   },
   {
     id: "artists",
@@ -155,7 +155,7 @@ export const scenes: Scene[] = [
     kicker: "067 · 607",
     title: "İKİLİ",
     track: tracks.otele,
-    image: "/images/duo.jpg",
+    image: "/images/scenes/bg-artists.jpg",
   },
   {
     id: "alliance",
@@ -164,7 +164,7 @@ export const scenes: Scene[] = [
     kicker: "İlk stüdyo albümü",
     title: "ALLIANCE",
     track: tracks.baknedicem,
-    image: "/images/alliance.jpg",
+    image: "/images/scenes/bg-alliance.jpg",
   },
   {
     id: "catalog",
@@ -173,7 +173,7 @@ export const scenes: Scene[] = [
     kicker: "Seçilmiş kayıtlar",
     title: "KATALOG",
     track: tracks.brapap,
-    image: "/images/concert.jpg",
+    image: "/images/scenes/bg-catalog.jpg",
   },
   {
     id: "family",
@@ -182,7 +182,7 @@ export const scenes: Scene[] = [
     kicker: "CLTR family",
     title: "EKİP",
     track: tracks.hmdl,
-    image: "/images/cover-hmdl.jpg",
+    image: "/images/scenes/bg-family.jpg",
   },
   {
     id: "house",
@@ -191,7 +191,7 @@ export const scenes: Scene[] = [
     kicker: "Stüdyo",
     title: "HOUSE",
     track: tracks.live,
-    image: "/images/house.jpg",
+    image: "/images/scenes/bg-house.jpg",
   },
   {
     id: "contact",
@@ -200,7 +200,7 @@ export const scenes: Scene[] = [
     kicker: "Kapı açık",
     title: "KONTAKT",
     track: tracks.sorma,
-    image: "/images/hero-night.jpg",
+    image: "/images/scenes/bg-contact.jpg",
   },
 ];
 

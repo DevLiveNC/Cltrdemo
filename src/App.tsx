@@ -29,6 +29,17 @@ export default function App() {
   const gateWipeBottomRef = useRef<HTMLDivElement>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<AudioHandle>(null);
+  const entranceScratchPlayedRef = useRef(false);
+
+  const playEntranceScratch = useCallback(() => {
+    if (entranceScratchPlayedRef.current) return;
+    entranceScratchPlayedRef.current = true;
+
+    // Keep the entrance vinyl scratch tied directly to the user's intent.
+    // This makes the sound fire for scroll/touch/keyboard entry as well as click.
+    transitionSound.unlock();
+    transitionSound.playScratch();
+  }, []);
 
   useEffect(() => {
     transitionSound.preload();
@@ -124,10 +135,9 @@ export default function App() {
     setIsEntering(true);
 
     // Audio & Vinyl Scratch Entrance Drop
+    playEntranceScratch();
     setPlaying(true);
     audioRef.current?.unlock();
-    transitionSound.unlock();
-    transitionSound.playScratch();
 
     const topWipe = gateWipeTopRef.current;
     const bottomWipe = gateWipeBottomRef.current;
@@ -158,7 +168,7 @@ export default function App() {
       setEntered(true);
       setIsEntering(false);
     }
-  }, [entered, isEntering]);
+  }, [entered, isEntering, playEntranceScratch]);
 
   useEffect(() => {
     if (!entered) return;
@@ -293,7 +303,9 @@ export default function App() {
       ) : null}
 
       <AnimatePresence>
-        {!entered ? <EnterGate onEnter={handleEnterStage} /> : null}
+        {!entered ? (
+          <EnterGate onEnter={handleEnterStage} onEnterCue={playEntranceScratch} />
+        ) : null}
       </AnimatePresence>
     </>
   );

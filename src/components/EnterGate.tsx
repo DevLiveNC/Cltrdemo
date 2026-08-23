@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-export default function EnterGate({ onEnter }: { onEnter: () => void }) {
+type EnterGateProps = {
+  onEnter: () => void;
+  onEnterCue?: () => void;
+};
+
+export default function EnterGate({ onEnter, onEnterCue }: EnterGateProps) {
   const [phase, setPhase] = useState<"drawing" | "revealed">("drawing");
 
   useEffect(() => {
@@ -23,6 +28,9 @@ export default function EnterGate({ onEnter }: { onEnter: () => void }) {
     const triggerEnter = () => {
       if (!triggered) {
         triggered = true;
+        // Fire the entrance cue inside the same user input event that revealed the stage.
+        // This keeps the vinyl scratch consistent for scroll, touch and keyboard entry.
+        onEnterCue?.();
         onEnter();
       }
     };
@@ -66,7 +74,7 @@ export default function EnterGate({ onEnter }: { onEnter: () => void }) {
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchmove", handleTouchMove);
     };
-  }, [phase, onEnter]);
+  }, [phase, onEnter, onEnterCue]);
 
   return (
     <motion.div
@@ -75,7 +83,7 @@ export default function EnterGate({ onEnter }: { onEnter: () => void }) {
       exit={{ opacity: 0, filter: "blur(12px)" }}
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
     >
-      <img src="/images/hero-night.jpg" alt="" />
+      <img src="/images/scenes/bg-home.jpg" alt="" />
       <div className="gate-shade" />
       <div className="gate-copy">
         <p className="kicker">İstanbul · Records & Production</p>
