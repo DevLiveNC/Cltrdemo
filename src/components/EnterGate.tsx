@@ -22,6 +22,9 @@ export default function EnterGate({ onEnter }: { onEnter: () => void }) {
         <button className="enter" onClick={onEnter} data-cursor="hover">
           Sahneye gir
         </button>
+        <p className="gate-credit">
+          bu demo <span className="live-dev">live</span>Development tarafından oluşturulmuştur
+        </p>
       </div>
     </motion.div>
   );

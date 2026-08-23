@@ -22,6 +22,7 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
   const playerRef = useRef<YTPlayer | null>(null);
   const fadeRef = useRef<number | null>(null);
   const videoRef = useRef(track.youtubeId);
+  const chorusRef = useRef(track.chorusStart);
   const playingRef = useRef(playing);
   playingRef.current = playing;
 
@@ -32,6 +33,7 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
       try {
         p.unMute();
         p.setVolume(80);
+        p.seekTo(chorusRef.current, true);
         p.playVideo();
       } catch {
         onBlocked(true);
@@ -59,6 +61,7 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
           videoId: track.youtubeId,
           playerVars: {
             autoplay: 0,
+            start: Math.round(track.chorusStart),
             controls: 0,
             disablekb: 1,
             fs: 0,
@@ -77,7 +80,15 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
             },
             onStateChange: (e) => {
               if (e.data === 1) onBlocked(false);
-              if (e.data === 0 && playingRef.current) e.target.playVideo();
+              if (e.data === 0 && playingRef.current) {
+                // Şarkı bittiğinde nakarattan (chorus) yeniden başlat.
+                try {
+                  e.target.seekTo(chorusRef.current, true);
+                } catch {
+                  /* noop */
+                }
+                e.target.playVideo();
+              }
             },
             onError: () => onBlocked(true),
           },
@@ -93,7 +104,7 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
       if (!p?.getDuration) return;
       const d = p.getDuration();
       const c = p.getCurrentTime();
-      if (d > 0) onProgress(c / d);
+      if (d > 0) onProgress((c - chorusRef.current) / (d - chorusRef.current));
     }, 250);
 
     return () => {
@@ -116,6 +127,7 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
     if (!p) return;
     if (videoRef.current === track.youtubeId) return;
     videoRef.current = track.youtubeId;
+    chorusRef.current = track.chorusStart;
 
     const fadeThenLoad = () => {
       let v = p.getVolume?.() ?? 80;
@@ -130,7 +142,7 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
         if (v <= 0) {
           if (fadeRef.current) window.clearInterval(fadeRef.current);
           try {
-            p.loadVideoById({ videoId: track.youtubeId, startSeconds: 0 });
+            p.loadVideoById({ videoId: track.youtubeId, startSeconds: track.chorusStart });
             p.setVolume(80);
             if (playingRef.current) {
               p.unMute();
@@ -144,7 +156,7 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
     };
 
     fadeThenLoad();
-  }, [track.youtubeId, onBlocked]);
+  }, [track.youtubeId, track.chorusStart, onBlocked]);
 
   return (
     <div className="yt-layer" aria-hidden>
