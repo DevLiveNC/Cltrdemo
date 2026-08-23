@@ -6,6 +6,7 @@
   --gold: #c4a574;
   --gold-2: #e8d3a4;
   --red: #c81e32;
+  --pistachio: #93c572;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --pad: clamp(18px, 3vw, 40px);
 }
@@ -507,6 +508,19 @@ img {
 .enter:hover {
   background: var(--fg);
   color: #111;
+}
+
+.gate-credit {
+  margin-top: 28px;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.gate-credit .live-dev {
+  color: var(--pistachio);
+  font-weight: 600;
 }
 
 .grid-2 {

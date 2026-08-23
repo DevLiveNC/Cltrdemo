@@ -9,6 +9,8 @@ export type Track = {
   youtubeId: string;
   cover: string;
   note: string;
+  /** Şarkının nakarat (chorus) başlangıcı, saniye cinsinden. Oynatma buradan başlar. */
+  chorusStart: number;
 };
 
 export type Scene = {
@@ -33,6 +35,7 @@ export const tracks = {
     youtubeId: "gD3SqwOJ9Sc",
     cover: "/images/cover-nafile.jpg",
     note: "ALLIANCE döneminin kırılma single’ı.",
+    chorusStart: 33,
   },
   agladim: {
     id: "agladim",
@@ -45,6 +48,7 @@ export const tracks = {
     youtubeId: "eWeWAZiqW0Y",
     cover: "/images/cover-sorma.jpg",
     note: "Duygusal çizginin en çıplak kaydı.",
+    chorusStart: 32,
   },
   otele: {
     id: "otele",
@@ -57,6 +61,7 @@ export const tracks = {
     youtubeId: "NPcRsdmeSoI",
     cover: "/images/house.jpg",
     note: "İkili imza sound’unun sahne hali.",
+    chorusStart: 48,
   },
   baknedicem: {
     id: "baknedicem",
@@ -69,6 +74,7 @@ export const tracks = {
     youtubeId: "MArJetRSQiM",
     cover: "/images/alliance.jpg",
     note: "İlk stüdyo albümünün açılış sahnesi.",
+    chorusStart: 30,
   },
   brapap: {
     id: "brapap",
@@ -81,6 +87,7 @@ export const tracks = {
     youtubeId: "Lj8kloI_3Tw",
     cover: "/images/cover-brapap.jpg",
     note: "CLTR ekibinin sokak manifestosu.",
+    chorusStart: 42,
   },
   hmdl: {
     id: "hmdl",
@@ -93,6 +100,7 @@ export const tracks = {
     youtubeId: "FinAvFZdwi8",
     cover: "/images/cover-hmdl.jpg",
     note: "Altı isim, tek gece, tek kayıt.",
+    chorusStart: 55,
   },
   live: {
     id: "live",
@@ -105,6 +113,7 @@ export const tracks = {
     youtubeId: "_D7TQ1MwnHA",
     cover: "/images/studio.jpg",
     note: "Stüdyonun çıplak hali. Canlı.",
+    chorusStart: 38,
   },
   sorma: {
     id: "sorma",
@@ -117,6 +126,7 @@ export const tracks = {
     youtubeId: "RA9BM5SoASQ",
     cover: "/images/cover-sorma.jpg",
     note: "Gece kapanışı. Soru yok.",
+    chorusStart: 40,
   },
 } satisfies Record<string, Track>;
 
