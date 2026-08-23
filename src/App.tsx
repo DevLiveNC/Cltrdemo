@@ -49,15 +49,6 @@ export default function App() {
     const from = indexRef.current;
     const total = scenes.length;
     const clamped = ((next % total) + total) % total;
-
-    if (isMobile) {
-      layerRefs.current[clamped]?.scrollIntoView({
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-        block: "start",
-      });
-      return;
-    }
-
     if (clamped === from || busy.current) return;
     const direction = dir ?? (clamped > from ? 1 : -1);
     const currentEl = layerRefs.current[from];
@@ -129,17 +120,19 @@ export default function App() {
 
     indexRef.current = clamped;
     setIndex(clamped);
-  }, [isMobile]);
+  }, []);
 
   useEffect(() => {
-    if (!entered || isMobile) return;
+    if (!entered) return;
 
     const observer = Observer.create({
       type: "wheel,touch",
       wheelSpeed: -1,
-      tolerance: 14,
+      tolerance: isMobile ? 24 : 14,
+      dragMinimum: isMobile ? 36 : 0,
+      lockAxis: true,
       preventDefault: true,
-      ignore: "a, button, input, textarea",
+      ignore: "a, button, input, textarea, .nav, .covers, .family, .artists-grid",
       onDown: () => go(indexRef.current - 1, -1),
       onUp: () => go(indexRef.current + 1, 1),
     });
@@ -171,27 +164,6 @@ export default function App() {
   }, [entered, go, isMobile]);
 
   useEffect(() => {
-    if (!entered || !isMobile) return;
-
-    const visible = new Map<Element, number>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => visible.set(entry.target, entry.intersectionRatio));
-        const active = [...visible.entries()].sort((a, b) => b[1] - a[1])[0];
-        if (!active || active[1] < 0.2) return;
-        const next = Number((active[0] as HTMLElement).dataset.index);
-        if (Number.isNaN(next) || next === indexRef.current) return;
-        indexRef.current = next;
-        setIndex(next);
-      },
-      { threshold: [0.2, 0.35, 0.5, 0.65], rootMargin: "-72px 0px -22% 0px" }
-    );
-
-    layerRefs.current.forEach((scene) => scene && observer.observe(scene));
-    return () => observer.disconnect();
-  }, [entered, isMobile]);
-
-  useEffect(() => {
     if (isMobile) return;
     const move = (e: PointerEvent) => {
       const el = cursorRef.current;
@@ -221,32 +193,28 @@ export default function App() {
         onBlocked={setBlocked}
       />
 
-      <main className={`stage ${isMobile ? "stage-mobile" : ""}`}>
+      <main className="stage">
         {scenes.map((scene, i) => (
           <section
             key={scene.id}
             id={`scene-${scene.id}`}
             data-index={i}
             aria-label={`${scene.index} — ${scene.nav}`}
-            className={`scene ${isMobile ? "scene-mobile" : ""}`}
+            className="scene"
             ref={(el) => {
               layerRefs.current[i] = el;
             }}
-            style={
-              isMobile
-                ? undefined
-                : {
-                    opacity: i === 0 ? 1 : 0,
-                    visibility: i === 0 ? "visible" : "hidden",
-                    zIndex: i === 0 ? 2 : 1,
-                  }
-            }
+            style={{
+              opacity: i === 0 ? 1 : 0,
+              visibility: i === 0 ? "visible" : "hidden",
+              zIndex: i === 0 ? 2 : 1,
+            }}
           >
             <div className="scene-media">
               <img src={scene.image} alt="" />
             </div>
             <div className="scene-shade" />
-            {isMobile || i === index ? <SceneContent index={i} /> : null}
+            {i === index ? <SceneContent index={index} /> : null}
           </section>
         ))}
       </main>
