@@ -1,11 +1,10 @@
 :root {
-  --bg: #070706;
-  --fg: #efe8dc;
-  --muted: #8d8678;
-  --line: rgba(239, 232, 220, 0.14);
-  --gold: #c4a574;
-  --gold-2: #e8d3a4;
-  --red: #c81e32;
+  --bg: #080808;
+  --fg: #f3f3f1;
+  --muted: #9a9a9a;
+  --line: rgba(243, 243, 241, 0.16);
+  --accent: #f3f3f1;
+  --accent-soft: #c9c9c7;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --pad: clamp(18px, 3vw, 40px);
 }
@@ -114,15 +113,15 @@ img {
   height: 100%;
   object-fit: cover;
   transform: scale(1.06);
-  filter: saturate(0.85) contrast(1.08);
+  filter: grayscale(1) contrast(1.08);
 }
 
 .scene-shade {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(7, 7, 6, 0.55) 0%, rgba(7, 7, 6, 0.18) 38%, rgba(7, 7, 6, 0.78) 100%),
-    linear-gradient(90deg, rgba(7, 7, 6, 0.55) 0%, transparent 50%);
+    linear-gradient(180deg, rgba(8, 8, 8, 0.55) 0%, rgba(8, 8, 8, 0.18) 38%, rgba(8, 8, 8, 0.78) 100%),
+    linear-gradient(90deg, rgba(8, 8, 8, 0.55) 0%, transparent 50%);
 }
 
 .scene-inner {
@@ -143,7 +142,7 @@ img {
   font-size: 11px;
   letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--accent);
   margin-bottom: 16px;
 }
 
@@ -170,7 +169,7 @@ img {
 
 .lede {
   max-width: 38rem;
-  color: #d8d0c2;
+  color: #d8d8d8;
   font-size: clamp(16px, 1.6vw, 20px);
   line-height: 1.55;
   margin-top: 22px;
@@ -259,7 +258,7 @@ img {
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(239, 232, 220, 0.55);
+  color: rgba(243, 243, 241, 0.58);
   position: relative;
 }
 
@@ -275,7 +274,7 @@ img {
   right: 0;
   bottom: -6px;
   height: 1px;
-  background: var(--gold);
+  background: var(--accent);
 }
 
 .icon-btn {
@@ -304,11 +303,11 @@ img {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: rgba(239, 232, 220, 0.28);
+  background: rgba(243, 243, 241, 0.28);
 }
 
 .progress button.on {
-  background: var(--gold);
+  background: var(--accent);
   transform: scale(1.35);
 }
 
@@ -325,7 +324,7 @@ img {
 .wipe {
   position: fixed;
   inset: 0;
-  background: var(--gold);
+  background: var(--accent);
   z-index: 70;
   pointer-events: none;
   transform: scaleY(0);
@@ -342,7 +341,7 @@ img {
   gap: 12px;
   align-items: center;
   padding: 10px;
-  background: rgba(10, 10, 9, 0.62);
+  background: rgba(12, 12, 12, 0.68);
   border: 1px solid var(--line);
   backdrop-filter: blur(16px);
 }
@@ -369,11 +368,19 @@ img {
 
 .track-card small {
   display: block;
-  color: var(--gold);
+  color: var(--accent);
   font-size: 10px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   margin-top: 6px;
+}
+
+.track-meta {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+  margin-top: 4px;
 }
 
 .eq {
@@ -385,7 +392,7 @@ img {
 
 .eq i {
   width: 3px;
-  background: var(--gold);
+  background: var(--accent);
   display: block;
   animation: eq 0.7s ease-in-out infinite alternate;
 }
@@ -423,13 +430,13 @@ img {
   right: 10px;
   bottom: 0;
   height: 2px;
-  background: rgba(239, 232, 220, 0.12);
+  background: rgba(243, 243, 241, 0.12);
 }
 
 .bar > span {
   display: block;
   height: 100%;
-  background: var(--gold);
+  background: var(--accent);
   width: 0%;
 }
 
@@ -439,6 +446,7 @@ img {
   z-index: 1;
   pointer-events: none;
   opacity: 0.22;
+  filter: grayscale(1);
   overflow: hidden;
 }
 
@@ -458,7 +466,7 @@ img {
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: #050504;
+  background: #050505;
   display: grid;
   place-items: center;
   text-align: center;
@@ -473,13 +481,13 @@ img {
   height: 100%;
   object-fit: cover;
   opacity: 0.35;
-  filter: grayscale(0.3) contrast(1.1);
+  filter: grayscale(1) contrast(1.1);
 }
 
 .gate-shade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(5, 5, 4, 0.3), rgba(5, 5, 4, 0.78));
+  background: linear-gradient(180deg, rgba(5, 5, 5, 0.3), rgba(5, 5, 5, 0.78));
 }
 
 .gate-copy {
@@ -529,7 +537,7 @@ img {
 }
 
 .artist-card p {
-  color: #d2cbbd;
+  color: #d2d2d2;
   max-width: 36rem;
   line-height: 1.55;
   margin-top: 10px;
@@ -582,9 +590,30 @@ img {
 .covers figcaption {
   position: absolute;
   inset: auto 0 0 0;
-  padding: 10px;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
+  display: grid;
+  gap: 3px;
+  padding: 26px 10px 10px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.78));
   font-size: 12px;
+}
+
+.covers figcaption strong {
+  font-weight: 500;
+}
+
+.cover-artists,
+.cover-meta {
+  overflow: hidden;
+  color: rgba(243, 243, 241, 0.72);
+  font-size: 10px;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cover-meta {
+  color: var(--accent);
+  letter-spacing: 0.08em;
 }
 
 .family {
@@ -596,7 +625,7 @@ img {
 }
 
 .family article {
-  background: rgba(7, 7, 6, 0.55);
+  background: rgba(8, 8, 8, 0.55);
   padding: 22px 18px 18px;
   min-height: 140px;
   display: flex;
@@ -611,7 +640,7 @@ img {
 }
 
 .family span {
-  color: var(--gold);
+  color: var(--accent);
   font-size: 11px;
   letter-spacing: 0.2em;
 }
@@ -647,7 +676,7 @@ img {
 .hint i {
   width: 1px;
   height: 42px;
-  background: var(--gold);
+  background: var(--accent);
   display: block;
   transform-origin: top;
   animation: pulse 1.8s var(--ease) infinite;
@@ -674,10 +703,10 @@ img {
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--gold);
-  border: 1px solid var(--gold);
+  color: var(--accent);
+  border: 1px solid var(--accent);
   padding: 8px 14px;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(8, 8, 8, 0.6);
 }
 
 @media (max-width: 900px) {

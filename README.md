@@ -1,6 +1,6 @@
 # CLTR — CULTURE Records
 
-İstanbul merkezli **CULTURE / CLTR** plak ve prodüksiyon evi için sinematik site.
+**CULTURE / CLTR** — ERAY067, Mansur ve ortak kayıtların resmî yayın kataloğu için sinematik site.
 
 - GSAP Observer + clip-path sahne geçişleri (her scroll = yeni sayfa)
 - Framer Motion kinetik tipografi

@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { allianceTracks, family, releases } from "../data/catalog";
+import { allianceTracks, family, releases, tracks } from "../data/catalog";
 import { FadeUp, KineticLine } from "../lib/split";
 import { spotifySearch, youtubeWatch } from "../lib/youtube";
 
@@ -7,20 +7,22 @@ export function SceneHome() {
   return (
     <div className="scene-inner">
       <FadeUp>
-        <p className="kicker">01 — İstanbul · 2026</p>
+        <p className="kicker">01 — Resmî katalog · Türkçe rap</p>
       </FadeUp>
       <h1 className="display">
         <KineticLine text="CULTURE" />
       </h1>
       <FadeUp delay={0.28}>
         <p className="lede">
-          Aktif plak ve prodüksiyon evi. Sokaktan stüdyoya, stüdyodan sahneye.
-          ERAY067 ve Mansur’un kaydı burada tutulur.
+          CULTURE etiketiyle yayımlanan ERAY067 ve Mansur kayıtlarını, CLTR
+          House ve CLTR LIVE seçkisiyle birlikte keşfedin. Başlık, tarih ve süre
+          bilgileri dijital müzik servislerindeki yayın künyeleri temel alınarak
+          düzenlendi.
         </p>
         <div className="meta-row">
           <span>Label · CULTURE</span>
-          <span>House · CLTR</span>
-          <span>Yönetim · Campus</span>
+          <span>Sanatçılar · ERAY067 / Mansur</span>
+          <span>Seçki · 2025–2026</span>
         </div>
       </FadeUp>
     </div>
@@ -33,21 +35,22 @@ export function SceneLabel() {
       <div className="grid-2">
         <div>
           <FadeUp>
-            <p className="kicker">02 — Şirket</p>
+            <p className="kicker">02 — CULTURE Records</p>
           </FadeUp>
           <h2 className="display sm">
             <KineticLine text="SESİN EVİ" />
           </h2>
           <FadeUp delay={0.25}>
             <p className="lede">
-              CULTURE (TUR) / Culture Records, dijital katalogda CLTR olarak
-              geçer. Ömer Çiller prodüksiyonunda; The Orchard ve ONErpm
-              dağıtımıyla çıkan kayıtlar, İstanbul’un gece dilini konuşur.
+              CULTURE, ERAY067 ve Mansur&apos;un dijital yayınlarında görülen kayıt
+              etiketi adıdır. Bu seçkide single&apos;lar, ALLIANCE albümü ve CLTR
+              House performans kayıtları resmî başlık, tarih ve süre bilgileriyle
+              bir araya gelir.
             </p>
             <p className="lede">
-              Campus Team yönetim ağı, CLTR House stüdyosu ve CLTR LIVE
-              performans serisi aynı çatı altında toplanır. Şirket bugün
-              Türkiye rap’inin en üretken odalarından biridir.
+              CLTR House, resmî Instagram profilinde Culture Müzik Stüdyosu
+              olarak tanımlanır. CLTR LIVE kayıtları ise ERAY067 ve Mansur&apos;un
+              YouTube üzerindeki canlı performans arşivini oluşturur.
             </p>
           </FadeUp>
         </div>
@@ -55,23 +58,23 @@ export function SceneLabel() {
           <ul className="album-list">
             <li>
               <b>01</b>
-              <span>Plak & yayın</span>
+              <span>Dijital yayın</span>
               <span>CULTURE</span>
             </li>
             <li>
               <b>02</b>
-              <span>Stüdyo</span>
-              <span>CLTR HOUSE</span>
+              <span>Albüm</span>
+              <span>ALLIANCE</span>
             </li>
             <li>
               <b>03</b>
-              <span>Canlı seri</span>
+              <span>Performans</span>
               <span>CLTR LIVE</span>
             </li>
             <li>
               <b>04</b>
-              <span>Yönetim</span>
-              <span>CAMPUS TEAM</span>
+              <span>Stüdyo</span>
+              <span>CLTR HOUSE</span>
             </li>
           </ul>
         </FadeUp>
@@ -92,23 +95,23 @@ export function SceneArtists() {
       <div className="grid-2" style={{ height: "auto", marginTop: 28 }}>
         <article className="artist-card">
           <FadeUp delay={0.15}>
-            <p className="kicker">Eray Ünal</p>
+            <p className="kicker">Resmî sanatçı adı</p>
             <h3>ERAY067</h3>
             <p>
-              Frankfurt doğumlu, Türkiye kökenli. Dedesi sazından gelen melodi
-              çizgisini drill ve Fransız type flow ile birleştirir. The Voice of
-              Rap Türkiye şampiyonu olduktan sonra CULTURE kadrosuna katıldı.
+              ERAY067, dijital platformlarda ve resmî video başlıklarında
+              kullanılan sanatçı adıdır. NAFİLE, ÇOK AĞLADIM, İHTİYAÇ YOK OTELE
+              ve ALLIANCE kayıtlarında Mansur ile birlikte kredilendirilir.
             </p>
           </FadeUp>
         </article>
         <article className="artist-card">
           <FadeUp delay={0.28}>
-            <p className="kicker">Ahmet Mansur Şahin</p>
+            <p className="kicker">Resmî sanatçı adı</p>
             <h3>MANSUR</h3>
             <p>
-              Şirketin keşfettiği kalem. Sokak anlatısı, samimi nakarat ve
-              geceye yazılmış dizeler. Eray ile stüdyoda tanıştı; uyum bir
-              anlaşma değil, bir ittifak haline geldi.
+              Mansur adıyla yayımlanan çalışmalar, ERAY067 ile ortak single&apos;larda
+              ve ALLIANCE albümünde buluşur. BRAPAP, HMDL ve SORMA kayıtlarında
+              farklı sanatçılarla ortak kredileri de bulunur.
             </p>
           </FadeUp>
         </article>
@@ -123,26 +126,26 @@ export function SceneAlliance() {
       <div className="grid-2">
         <div>
           <FadeUp>
-            <p className="kicker">04 — 31 Temmuz 2026</p>
+            <p className="kicker">04 — 31 Temmuz 2026 · 8 parça</p>
           </FadeUp>
           <h2 className="display sm">
             <KineticLine text="ALLIANCE" />
           </h2>
           <FadeUp delay={0.24}>
             <p className="lede">
-              ERAY067 ve Mansur’un ilk stüdyo albümü. Sekiz parça, tek gece gibi
-              akan bir ittifak. Contra, Yung Ouzo ve Reder konuk; BIGBAT,
-              Edokaleen, İTSKİMOBEATS prodüksiyon.
+              ALLIANCE, ERAY067 ve MANSUR imzalı sekiz parçalık albümdür. 31
+              Temmuz 2026 tarihinde yayımlanan çalışma, dijital platform
+              bilgilerinde yaklaşık 16 dakikalık toplam süreyle listelenir.
             </p>
           </FadeUp>
         </div>
         <FadeUp delay={0.2}>
           <ol className="album-list">
-            {allianceTracks.map((t, i) => (
-              <li key={t}>
+            {allianceTracks.map((track, i) => (
+              <li key={track.title}>
                 <b>{String(i + 1).padStart(2, "0")}</b>
-                <span>{t}</span>
-                <span>ALLIANCE</span>
+                <span>{track.title}</span>
+                <span>{track.duration}</span>
               </li>
             ))}
           </ol>
@@ -156,20 +159,29 @@ export function SceneCatalog() {
   return (
     <div className="scene-inner topish">
       <FadeUp>
-        <p className="kicker">05 — Katalog</p>
+        <p className="kicker">05 — Seçilmiş resmî yayınlar</p>
       </FadeUp>
       <h2 className="display sm">
-        <KineticLine text="KAYITLAR" />
+        <KineticLine text="KATALOG" />
       </h2>
       <FadeUp delay={0.2}>
         <div className="covers" style={{ marginTop: 28 }}>
-          {releases.map((r) => (
-            <article key={r.title}>
-              <a href={youtubeWatch(r.youtubeId)} target="_blank" rel="noreferrer" data-cursor="hover">
-                <img src={r.cover} alt="" />
+          {releases.map((release) => (
+            <article key={release.title}>
+              <a
+                href={youtubeWatch(release.youtubeId)}
+                target="_blank"
+                rel="noreferrer"
+                data-cursor="hover"
+                aria-label={`${release.title} resmî YouTube bağlantısını aç`}
+              >
+                <img src={release.cover} alt={`${release.title} kapak görseli`} />
                 <figcaption>
-                  <strong>{r.title}</strong>
-                  <div style={{ opacity: 0.75 }}>{r.year}</div>
+                  <strong>{release.title}</strong>
+                  <div className="cover-artists">{release.artists}</div>
+                  <div className="cover-meta">
+                    {release.releaseDate} · {release.duration}
+                  </div>
                 </figcaption>
               </a>
             </article>
@@ -184,19 +196,19 @@ export function SceneFamily() {
   return (
     <div className="scene-inner topish">
       <FadeUp>
-        <p className="kicker">06 — CLTR ekip</p>
+        <p className="kicker">06 — Sanatçı ve yapım kredileri</p>
       </FadeUp>
       <h2 className="display sm">
-        <KineticLine text="AİLE" />
+        <KineticLine text="KREDİLER" />
       </h2>
       <FadeUp delay={0.22}>
         <div className="family" style={{ marginTop: 28 }}>
-          {family.map((f) => (
-            <article key={f.name}>
-              <span>{f.tag}</span>
+          {family.map((credit) => (
+            <article key={credit.name}>
+              <span>{credit.tag}</span>
               <div>
-                <strong>{f.name}</strong>
-                <p style={{ color: "#b7b0a3", marginTop: 6 }}>{f.role}</p>
+                <strong>{credit.name}</strong>
+                <p style={{ color: "#bdbdbd", marginTop: 6 }}>{credit.role}</p>
               </div>
             </article>
           ))}
@@ -217,16 +229,26 @@ export function SceneHouse() {
       </h2>
       <FadeUp delay={0.24}>
         <p className="lede">
-          Culture Müzik Stüdyosu. CLTR LIVE performansları, Kick yayınları ve
-          albüm odası. Nafile’nin canlı hali burada çekildi — Türkiye
-          standardının üstünde, çıplak ve yakın.
+          CLTR House, @cltrhouse hesabında Culture Müzik Stüdyosu olarak
+          tanımlanır. CLTR LIVE arşivi, ERAY067 ve Mansur&apos;un canlı
+          performanslarını sezon ve bölüm bilgileriyle yayımlar.
         </p>
         <div className="meta-row">
-          <a href="https://www.instagram.com/cltrhouse/" target="_blank" rel="noreferrer" data-cursor="hover">
+          <a
+            href="https://www.instagram.com/cltrhouse/"
+            target="_blank"
+            rel="noreferrer"
+            data-cursor="hover"
+          >
             @cltrhouse
           </a>
-          <a href="https://kick.com/cltrhouse" target="_blank" rel="noreferrer" data-cursor="hover">
-            kick.com/cltrhouse
+          <a
+            href={youtubeWatch(tracks.live.youtubeId)}
+            target="_blank"
+            rel="noreferrer"
+            data-cursor="hover"
+          >
+            NAFİLE · CLTR LIVE
           </a>
         </div>
       </FadeUp>
@@ -238,30 +260,41 @@ export function SceneContact() {
   return (
     <div className="scene-inner topish">
       <FadeUp>
-        <p className="kicker">08 — İletişim</p>
+        <p className="kicker">08 — Yayın, iş birliği ve yönetim</p>
       </FadeUp>
       <h2 className="display sm">
-        <KineticLine text="KAPI AÇIK" />
+        <KineticLine text="İLETİŞİM" />
       </h2>
       <div className="contact-grid" style={{ marginTop: 20 }}>
         <FadeUp delay={0.18}>
-          <a href="https://www.instagram.com/culturecords.co/" target="_blank" rel="noreferrer" data-cursor="hover">
-            @culturecords.co
+          <a
+            href="https://www.instagram.com/culturerecords__/"
+            target="_blank"
+            rel="noreferrer"
+            data-cursor="hover"
+          >
+            @culturerecords__
           </a>
-          <a href="https://www.instagram.com/campusteam.co/" target="_blank" rel="noreferrer" data-cursor="hover">
+          <a
+            href="https://www.instagram.com/campusteam.co/"
+            target="_blank"
+            rel="noreferrer"
+            data-cursor="hover"
+          >
             @campusteam.co
           </a>
           <a href="mailto:contact@campusteam.com.tr" data-cursor="hover">
             contact@campusteam.com.tr
           </a>
           <a href="tel:+905444454167" data-cursor="hover">
-            0544 445 41 67
+            +90 544 445 41 67
           </a>
         </FadeUp>
         <FadeUp delay={0.3}>
           <p className="lede">
-            Demo, booking, yayın. İstanbul. CULTURE etiketiyle çıkan her kayıt
-            bu odaya aittir.
+            Yayın, iş birliği ve yönetim talepleriniz için Campus Management
+            iletişim kanallarını kullanabilirsiniz. Resmî katalog ve sanatçı
+            bağlantıları aşağıda yer alır.
           </p>
           <div className="meta-row">
             <a
@@ -270,7 +303,7 @@ export function SceneContact() {
               rel="noreferrer"
               data-cursor="hover"
             >
-              Spotify
+              Spotify&apos;da keşfet
             </a>
             <a
               href="https://www.youtube.com/results?search_query=CultureRecords+ERAY067+MANSUR"
@@ -278,7 +311,7 @@ export function SceneContact() {
               rel="noreferrer"
               data-cursor="hover"
             >
-              YouTube
+              YouTube&apos;da izle
             </a>
           </div>
         </FadeUp>

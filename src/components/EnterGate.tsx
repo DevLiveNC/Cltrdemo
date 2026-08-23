@@ -12,12 +12,12 @@ export default function EnterGate({ onEnter }: { onEnter: () => void }) {
       <img src="/images/hero-night.jpg" alt="" />
       <div className="gate-shade" />
       <div className="gate-copy">
-        <p className="kicker">İstanbul · Records & Production</p>
+        <p className="kicker">CULTURE Records · Resmî katalog</p>
         <h1>
           <KineticLine text="CLTR" stagger={0.06} />
         </h1>
         <p className="lede" style={{ marginInline: "auto" }}>
-          CULTURE. Eray, Mansur ve evin sesi.
+          ERAY067, Mansur ve ortak kayıtlar.
         </p>
         <button className="enter" onClick={onEnter} data-cursor="hover">
           Sahneye gir

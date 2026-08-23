@@ -30,13 +30,18 @@ export default function Chrome({
             </button>
           ))}
         </nav>
-        <button className="icon-btn" onClick={onToggle} data-cursor="hover">
+        <button
+          className="icon-btn"
+          onClick={onToggle}
+          aria-label={playing ? "Sesi kapat" : "Sesi aç"}
+          data-cursor="hover"
+        >
           {playing ? "SES" : "MUTE"}
         </button>
       </header>
 
       <div className="scene-count">
-        {scenes[index].index} / 08
+        {scenes[index].index} / {String(scenes.length).padStart(2, "0")}
       </div>
 
       <div className="progress">

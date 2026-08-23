@@ -15,8 +15,8 @@ export default function TrackCard({
 }) {
   return (
     <aside className="track-card" data-cursor="hover">
-      <button onClick={onToggle} aria-label="oynat">
-        <img src={track.cover} alt="" />
+      <button onClick={onToggle} aria-label={playing ? "Sesi duraklat" : "Sesi oynat"}>
+        <img src={track.cover} alt={`${track.title} kapak görseli`} />
       </button>
       <AnimatePresence mode="wait">
         <motion.div
@@ -28,9 +28,10 @@ export default function TrackCard({
         >
           <h4>{track.title}</h4>
           <p>{track.artists}</p>
-          <small>
-            {track.album} · {track.label} · {track.year} · {track.duration}
-          </small>
+          <small>{track.note}</small>
+          <div className="track-meta">
+            {track.album} · {track.releaseDate} · {track.duration}
+          </div>
         </motion.div>
       </AnimatePresence>
       <div style={{ display: "grid", justifyItems: "end", gap: 8 }}>
@@ -43,10 +44,10 @@ export default function TrackCard({
         </div>
         <div style={{ display: "flex", gap: 8, fontSize: 10, letterSpacing: "0.14em" }}>
           <a href={youtubeWatch(track.youtubeId)} target="_blank" rel="noreferrer">
-            YT
+            YOUTUBE
           </a>
           <a href={spotifySearch(`${track.title} ${track.artists}`)} target="_blank" rel="noreferrer">
-            SP
+            SPOTIFY
           </a>
         </div>
       </div>
