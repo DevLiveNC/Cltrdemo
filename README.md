@@ -1,19 +1,46 @@
-# Cltrdemo
+# CLTR — CULTURE Records
 
-CLTR için sıfırdan hazırlanmış çok sayfalı statik vitrin.
+İstanbul merkezli **CULTURE / CLTR** plak ve prodüksiyon evi için sinematik site.
 
-## İçerik
-- Daha doğal ve premium Türkçe metinler
-- İlk girişte daha classy bir hero alanı
-- `liveDevelopment tarafından hazırlandı` ibaresi (`live` kısmı fıstık yeşili)
-- Her sayfadaki YouTube player'larında parçaların nakarat girişinden başlatılması
+- GSAP Observer + clip-path sahne geçişleri (her scroll = yeni sayfa)
+- Framer Motion kinetik tipografi
+- Sahne başına resmi klibin YouTube üzerinden çalması
+- Köşede şarkı kartı (başlık, sanatçı, yıl, süre, label)
 
-## Çalıştırma
-
-Basit bir statik sunucu yeterlidir:
+## Komutlar
 
 ```bash
-python3 -m http.server 4173 --bind 0.0.0.0
+npm install
+npm run dev
+npm run typecheck
+npm run build
+npm run preview
 ```
 
-Ardından tarayıcıda `http://localhost:4173` açılabilir.
+| Komut | Ne yapar |
+|---|---|
+| `npm install` | Bağımlılıkları kurar |
+| `npm run dev` | Yerel geliştirme sunucusu |
+| `npm run typecheck` | TypeScript kontrolü |
+| `npm run build` | Vercel’in kullandığı production build (`dist/`) |
+| `npm run preview` | Build’i yerelde dener |
+| `npm start` | Preview ile aynı |
+
+## Vercel
+
+Repo’yu Vercel’e bağla. Ayarlar otomatik:
+
+- **Framework:** Vite
+- **Install:** `npm install`
+- **Build:** `npm run build`
+- **Output:** `dist`
+- **Node:** 20
+
+Dashboard’dan: **Add New Project → GitHub repo → Deploy**.  
+CLI ile:
+
+```bash
+npm i -g vercel
+vercel
+vercel --prod
+```
