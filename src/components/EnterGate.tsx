@@ -3,10 +3,9 @@ import { AnimatePresence, motion } from "framer-motion";
 
 type EnterGateProps = {
   onEnter: () => void;
-  onEnterCue?: () => void;
 };
 
-export default function EnterGate({ onEnter, onEnterCue }: EnterGateProps) {
+export default function EnterGate({ onEnter }: EnterGateProps) {
   const [phase, setPhase] = useState<"drawing" | "revealed">("drawing");
 
   useEffect(() => {
@@ -18,63 +17,20 @@ export default function EnterGate({ onEnter, onEnterCue }: EnterGateProps) {
     return () => clearTimeout(timer);
   }, []);
 
-  // Scroll down / Touch swipe down / Keyboard listener to trigger onEnter
+  // First page: no scroll / swipe / keyboard entry — only the button.
   useEffect(() => {
-    if (phase !== "revealed") return;
-
-    let startY = 0;
-    let triggered = false;
-
-    const triggerEnter = () => {
-      if (!triggered) {
-        triggered = true;
-        // Fire the entrance cue inside the same user input event that revealed the stage.
-        // This keeps the vinyl scratch consistent for scroll, touch and keyboard entry.
-        onEnterCue?.();
-        onEnter();
-      }
+    const blockScroll = (e: Event) => {
+      e.preventDefault();
     };
 
-    const handleWheel = (e: WheelEvent) => {
-      if (e.deltaY > 10) {
-        triggerEnter();
-      }
-    };
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (["ArrowDown", "PageDown", " "].includes(e.key)) {
-        e.preventDefault();
-        triggerEnter();
-      }
-    };
-
-    const handleTouchStart = (e: TouchEvent) => {
-      if (e.touches.length > 0) {
-        startY = e.touches[0].clientY;
-      }
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (e.touches.length > 0) {
-        const diffY = startY - e.touches[0].clientY;
-        if (diffY > 25) {
-          triggerEnter();
-        }
-      }
-    };
-
-    window.addEventListener("wheel", handleWheel, { passive: true });
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("touchstart", handleTouchStart, { passive: true });
-    window.addEventListener("touchmove", handleTouchMove, { passive: true });
+    window.addEventListener("wheel", blockScroll, { passive: false });
+    window.addEventListener("touchmove", blockScroll, { passive: false });
 
     return () => {
-      window.removeEventListener("wheel", handleWheel);
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("touchstart", handleTouchStart);
-      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("wheel", blockScroll);
+      window.removeEventListener("touchmove", blockScroll);
     };
-  }, [phase, onEnter, onEnterCue]);
+  }, []);
 
   return (
     <motion.div
@@ -174,10 +130,11 @@ export default function EnterGate({ onEnter, onEnterCue }: EnterGateProps) {
           </AnimatePresence>
         </div>
 
-        {/* Sahneye gir prominent text + scroll indicator */}
+        {/* Sahneye gir — click only */}
         <div className="gate-btn-container">
           {phase === "revealed" && (
-            <motion.div
+            <motion.button
+              type="button"
               className="enter-text-group"
               onClick={onEnter}
               data-cursor="hover"
@@ -187,9 +144,9 @@ export default function EnterGate({ onEnter, onEnterCue }: EnterGateProps) {
             >
               <span className="enter-prominent-text">SAHNEYE GİR</span>
               <span className="enter-scroll-hint">
-                <i className="scroll-dot" /> scroll’u aşağı kaydır
+                <i className="scroll-dot" /> tıkla
               </span>
-            </motion.div>
+            </motion.button>
           )}
         </div>
       </div>

@@ -35,8 +35,7 @@ export default function App() {
     if (entranceScratchPlayedRef.current) return;
     entranceScratchPlayedRef.current = true;
 
-    // Keep the entrance vinyl scratch tied directly to the user's intent.
-    // This makes the sound fire for scroll/touch/keyboard entry as well as click.
+    // Entrance vinyl scratch fires with the click that opens the stage.
     transitionSound.unlock();
     transitionSound.playScratch();
   }, []);
@@ -304,7 +303,7 @@ export default function App() {
 
       <AnimatePresence>
         {!entered ? (
-          <EnterGate onEnter={handleEnterStage} onEnterCue={playEntranceScratch} />
+          <EnterGate onEnter={handleEnterStage} />
         ) : null}
       </AnimatePresence>
     </>
