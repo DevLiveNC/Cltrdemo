@@ -25,14 +25,42 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
   const playingRef = useRef(playing);
   playingRef.current = playing;
 
+  const runOneSecondFadeIn = (targetVolume = 80) => {
+    const p = playerRef.current;
+    if (!p) return;
+
+    if (fadeRef.current) window.clearInterval(fadeRef.current);
+
+    p.setVolume(0);
+    const startMs = Date.now();
+    const durationMs = 1000; // Exact 1 second fade-in
+
+    fadeRef.current = window.setInterval(() => {
+      const elapsed = Date.now() - startMs;
+      const progress = Math.min(1, elapsed / durationMs);
+      const currentVol = Math.round(progress * targetVolume);
+
+      try {
+        p.setVolume(currentVol);
+      } catch {
+        /* noop */
+      }
+
+      if (progress >= 1) {
+        if (fadeRef.current) window.clearInterval(fadeRef.current);
+      }
+    }, 30);
+  };
+
   useImperativeHandle(ref, () => ({
     unlock: () => {
       const p = playerRef.current;
       if (!p) return;
       try {
         p.unMute();
-        p.setVolume(80);
+        p.seekTo(track.startTime || 40, true);
         p.playVideo();
+        runOneSecondFadeIn(80);
       } catch {
         onBlocked(true);
       }
@@ -43,6 +71,7 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
       if (on) {
         p.unMute();
         p.playVideo();
+        runOneSecondFadeIn(80);
       } else p.pauseVideo();
     },
   }));
@@ -69,15 +98,25 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
             playlist: track.youtubeId,
             origin: window.location.origin,
             iv_load_policy: 3,
+            start: track.startTime || 40,
           },
           events: {
             onReady: (e) => {
               e.target.mute();
-              e.target.setVolume(80);
+              e.target.setVolume(0);
+              try {
+                e.target.seekTo(track.startTime || 40, true);
+              } catch {
+                /* noop */
+              }
             },
             onStateChange: (e) => {
               if (e.data === 1) onBlocked(false);
-              if (e.data === 0 && playingRef.current) e.target.playVideo();
+              if (e.data === 0 && playingRef.current) {
+                e.target.seekTo(track.startTime || 40, true);
+                e.target.playVideo();
+                runOneSecondFadeIn(80);
+              }
             },
             onError: () => onBlocked(true),
           },
@@ -111,40 +150,30 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
     else p.pauseVideo();
   }, [playing]);
 
+  // Handle Track Changes instantly: seek to middle/chorus & 1s Fade-In
   useEffect(() => {
     const p = playerRef.current;
     if (!p) return;
     if (videoRef.current === track.youtubeId) return;
     videoRef.current = track.youtubeId;
 
-    const fadeThenLoad = () => {
-      let v = p.getVolume?.() ?? 80;
+    try {
       if (fadeRef.current) window.clearInterval(fadeRef.current);
-      fadeRef.current = window.setInterval(() => {
-        v = Math.max(0, v - 14);
-        try {
-          p.setVolume(v);
-        } catch {
-          /* noop */
-        }
-        if (v <= 0) {
-          if (fadeRef.current) window.clearInterval(fadeRef.current);
-          try {
-            p.loadVideoById({ videoId: track.youtubeId, startSeconds: 0 });
-            p.setVolume(80);
-            if (playingRef.current) {
-              p.unMute();
-              p.playVideo();
-            }
-          } catch {
-            onBlocked(true);
-          }
-        }
-      }, 32);
-    };
+      p.setVolume(0);
+      p.loadVideoById({
+        videoId: track.youtubeId,
+        startSeconds: track.startTime || 40,
+      });
 
-    fadeThenLoad();
-  }, [track.youtubeId, onBlocked]);
+      if (playingRef.current) {
+        p.unMute();
+        p.playVideo();
+        runOneSecondFadeIn(80);
+      }
+    } catch {
+      onBlocked(true);
+    }
+  }, [track.youtubeId, track.startTime, onBlocked]);
 
   return (
     <div className="yt-layer" aria-hidden>

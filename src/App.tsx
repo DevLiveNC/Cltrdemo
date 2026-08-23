@@ -9,11 +9,13 @@ import Chrome from "./components/Chrome";
 import EnterGate from "./components/EnterGate";
 import TrackCard from "./components/TrackCard";
 import { SceneContent } from "./scenes/Scenes";
+import { transitionSound } from "./lib/transitionSound";
 
 gsap.registerPlugin(Observer, ScrollTrigger);
 
 export default function App() {
   const [entered, setEntered] = useState(false);
+  const [isEntering, setIsEntering] = useState(false);
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -23,10 +25,13 @@ export default function App() {
   const indexRef = useRef(0);
   const layerRefs = useRef<(HTMLElement | null)[]>([]);
   const wipeRef = useRef<HTMLDivElement>(null);
+  const gateWipeTopRef = useRef<HTMLDivElement>(null);
+  const gateWipeBottomRef = useRef<HTMLDivElement>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<AudioHandle>(null);
 
   useEffect(() => {
+    transitionSound.preload();
     scenes.forEach((s) => {
       const img = new Image();
       img.src = s.image;
@@ -42,6 +47,10 @@ export default function App() {
     const currentEl = layerRefs.current[from];
     const nextEl = layerRefs.current[clamped];
     const wipe = wipeRef.current;
+
+    // Play a random DJ vinyl scratch transition sound variation
+    transitionSound.playScratch();
+
     if (!currentEl || !nextEl) {
       indexRef.current = clamped;
       setIndex(clamped);
@@ -110,6 +119,47 @@ export default function App() {
     setIndex(clamped);
   }, []);
 
+  const handleEnterStage = useCallback(() => {
+    if (entered || isEntering) return;
+    setIsEntering(true);
+
+    // Audio & Vinyl Scratch Entrance Drop
+    setPlaying(true);
+    audioRef.current?.unlock();
+    transitionSound.unlock();
+    transitionSound.playScratch();
+
+    const topWipe = gateWipeTopRef.current;
+    const bottomWipe = gateWipeBottomRef.current;
+
+    if (topWipe && bottomWipe) {
+      const tl = gsap.timeline({
+        onComplete: () => {
+          setIsEntering(false);
+        },
+      });
+
+      // Special Dual Shutter Opening Transition Animation
+      tl.to([topWipe, bottomWipe], {
+        scaleY: 1,
+        duration: 0.38,
+        ease: "power4.in",
+      })
+        .add(() => {
+          setEntered(true);
+        })
+        .to([topWipe, bottomWipe], {
+          scaleY: 0,
+          duration: 0.48,
+          ease: "power4.out",
+          delay: 0.04,
+        });
+    } else {
+      setEntered(true);
+      setIsEntering(false);
+    }
+  }, [entered, isEntering]);
+
   useEffect(() => {
     if (!entered) return;
 
@@ -161,6 +211,15 @@ export default function App() {
     return () => window.removeEventListener("pointermove", move);
   }, []);
 
+  const handleToggleAudio = () => {
+    setPlaying((v) => {
+      const next = !v;
+      audioRef.current?.toggle(next);
+      transitionSound.setMuted(!next);
+      return next;
+    });
+  };
+
   const track = scenes[index].track;
 
   return (
@@ -169,6 +228,10 @@ export default function App() {
       <div className="noise" />
       <div className="vignette" />
       <div className="wipe" ref={wipeRef} />
+
+      {/* Special Entry Dual Shutter Transition Overlays */}
+      <div className="gate-wipe-top" ref={gateWipeTopRef} />
+      <div className="gate-wipe-bottom" ref={gateWipeBottomRef} />
 
       <AudioEngine
         ref={audioRef}
@@ -207,23 +270,13 @@ export default function App() {
             index={index}
             playing={playing}
             onJump={(i) => go(i)}
-            onToggle={() => {
-              setPlaying((v) => {
-                audioRef.current?.toggle(!v);
-                return !v;
-              });
-            }}
+            onToggle={handleToggleAudio}
           />
           <TrackCard
             track={track}
             playing={playing}
             progress={progress}
-            onToggle={() => {
-              setPlaying((v) => {
-                audioRef.current?.toggle(!v);
-                return !v;
-              });
-            }}
+            onToggle={handleToggleAudio}
           />
           {blocked ? (
             <a
@@ -240,15 +293,7 @@ export default function App() {
       ) : null}
 
       <AnimatePresence>
-        {!entered ? (
-          <EnterGate
-            onEnter={() => {
-              setEntered(true);
-              setPlaying(true);
-              audioRef.current?.unlock();
-            }}
-          />
-        ) : null}
+        {!entered ? <EnterGate onEnter={handleEnterStage} /> : null}
       </AnimatePresence>
     </>
   );
