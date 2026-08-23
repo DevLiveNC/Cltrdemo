@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { scenes } from "../data/catalog";
 
 export default function Chrome({
@@ -11,6 +12,16 @@ export default function Chrome({
   onJump: (i: number) => void;
   onToggle: () => void;
 }) {
+  const navRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    navRef.current?.querySelector(".on")?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "center",
+    });
+  }, [index]);
+
   return (
     <div className="chrome">
       <header className="topbar">
@@ -18,11 +29,12 @@ export default function Chrome({
           CLTR
           <small>CULTURE</small>
         </button>
-        <nav className="nav">
+        <nav className="nav" ref={navRef} aria-label="Bölümler">
           {scenes.map((s, i) => (
             <button
               key={s.id}
               className={i === index ? "on" : ""}
+              aria-current={i === index ? "page" : undefined}
               onClick={() => onJump(i)}
               data-cursor="hover"
             >
@@ -30,7 +42,13 @@ export default function Chrome({
             </button>
           ))}
         </nav>
-        <button className="icon-btn" onClick={onToggle} data-cursor="hover">
+        <button
+          className="icon-btn"
+          onClick={onToggle}
+          aria-label={playing ? "Sesi kapat" : "Sesi aç"}
+          aria-pressed={playing}
+          data-cursor="hover"
+        >
           {playing ? "SES" : "MUTE"}
         </button>
       </header>

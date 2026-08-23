@@ -19,6 +19,11 @@ export default function App() {
   const [progress, setProgress] = useState(0);
   const [blocked, setBlocked] = useState(false);
   const [hover, setHover] = useState(false);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(max-width: 900px), (pointer: coarse)").matches
+      : false
+  );
   const busy = useRef(false);
   const indexRef = useRef(0);
   const layerRefs = useRef<(HTMLElement | null)[]>([]);
@@ -33,10 +38,26 @@ export default function App() {
     });
   }, []);
 
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 900px), (pointer: coarse)");
+    const update = () => setIsMobile(media.matches);
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
   const go = useCallback((next: number, dir?: 1 | -1) => {
     const from = indexRef.current;
     const total = scenes.length;
     const clamped = ((next % total) + total) % total;
+
+    if (isMobile) {
+      layerRefs.current[clamped]?.scrollIntoView({
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+        block: "start",
+      });
+      return;
+    }
+
     if (clamped === from || busy.current) return;
     const direction = dir ?? (clamped > from ? 1 : -1);
     const currentEl = layerRefs.current[from];
@@ -108,10 +129,10 @@ export default function App() {
 
     indexRef.current = clamped;
     setIndex(clamped);
-  }, []);
+  }, [isMobile]);
 
   useEffect(() => {
-    if (!entered) return;
+    if (!entered || isMobile) return;
 
     const observer = Observer.create({
       type: "wheel,touch",
@@ -147,9 +168,31 @@ export default function App() {
       st.kill();
       window.removeEventListener("keydown", onKey);
     };
-  }, [entered, go]);
+  }, [entered, go, isMobile]);
 
   useEffect(() => {
+    if (!entered || !isMobile) return;
+
+    const visible = new Map<Element, number>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => visible.set(entry.target, entry.intersectionRatio));
+        const active = [...visible.entries()].sort((a, b) => b[1] - a[1])[0];
+        if (!active || active[1] < 0.2) return;
+        const next = Number((active[0] as HTMLElement).dataset.index);
+        if (Number.isNaN(next) || next === indexRef.current) return;
+        indexRef.current = next;
+        setIndex(next);
+      },
+      { threshold: [0.2, 0.35, 0.5, 0.65], rootMargin: "-72px 0px -22% 0px" }
+    );
+
+    layerRefs.current.forEach((scene) => scene && observer.observe(scene));
+    return () => observer.disconnect();
+  }, [entered, isMobile]);
+
+  useEffect(() => {
+    if (isMobile) return;
     const move = (e: PointerEvent) => {
       const el = cursorRef.current;
       if (!el) return;
@@ -159,7 +202,7 @@ export default function App() {
     };
     window.addEventListener("pointermove", move);
     return () => window.removeEventListener("pointermove", move);
-  }, []);
+  }, [isMobile]);
 
   const track = scenes[index].track;
 
@@ -178,28 +221,35 @@ export default function App() {
         onBlocked={setBlocked}
       />
 
-      <div className="stage">
+      <main className={`stage ${isMobile ? "stage-mobile" : ""}`}>
         {scenes.map((scene, i) => (
           <section
             key={scene.id}
-            className="scene"
+            id={`scene-${scene.id}`}
+            data-index={i}
+            aria-label={`${scene.index} — ${scene.nav}`}
+            className={`scene ${isMobile ? "scene-mobile" : ""}`}
             ref={(el) => {
               layerRefs.current[i] = el;
             }}
-            style={{
-              opacity: i === 0 ? 1 : 0,
-              visibility: i === 0 ? "visible" : "hidden",
-              zIndex: i === 0 ? 2 : 1,
-            }}
+            style={
+              isMobile
+                ? undefined
+                : {
+                    opacity: i === 0 ? 1 : 0,
+                    visibility: i === 0 ? "visible" : "hidden",
+                    zIndex: i === 0 ? 2 : 1,
+                  }
+            }
           >
             <div className="scene-media">
               <img src={scene.image} alt="" />
             </div>
             <div className="scene-shade" />
-            {i === index ? <SceneContent index={index} /> : null}
+            {isMobile || i === index ? <SceneContent index={i} /> : null}
           </section>
         ))}
-      </div>
+      </main>
 
       {entered ? (
         <>

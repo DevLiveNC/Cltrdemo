@@ -302,7 +302,7 @@ export function SceneContent({ index }: { index: number }) {
   const Comp = map[index];
   return (
     <AnimatePresence mode="wait">
-      <motion.div key={index} style={{ height: "100%" }}>
+      <motion.div key={index} className="scene-content">
         <Comp />
       </motion.div>
     </AnimatePresence>
