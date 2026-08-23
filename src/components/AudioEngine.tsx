@@ -14,24 +14,39 @@ type Props = {
   onBlocked: (blocked: boolean) => void;
 };
 
+// Full volume: when the sound is on it should come in loud, not modest.
+const TARGET_VOLUME = 100;
+
 const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
   { track, playing, onProgress, onBlocked },
   ref
 ) {
   const hostRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<YTPlayer | null>(null);
+  const playerReadyRef = useRef(false);
   const fadeRef = useRef<number | null>(null);
   const videoRef = useRef(track.youtubeId);
   const playingRef = useRef(playing);
   playingRef.current = playing;
+  // Becomes true the moment the user enters the stage (a real gesture).
+  // Lets us re-apply unmuted playback if the player wasn't ready yet at entry.
+  const unlockedRef = useRef(false);
+  // Keep the latest track in a ref so imperative handlers never go stale.
+  const trackRef = useRef(track);
+  trackRef.current = track;
 
-  const runOneSecondFadeIn = (targetVolume = 80) => {
+  const runOneSecondFadeIn = (targetVolume = TARGET_VOLUME) => {
     const p = playerRef.current;
     if (!p) return;
 
     if (fadeRef.current) window.clearInterval(fadeRef.current);
 
-    p.setVolume(0);
+    try {
+      p.unMute();
+      p.setVolume(0);
+    } catch {
+      /* noop */
+    }
     const startMs = Date.now();
     const durationMs = 1000; // Exact 1 second fade-in
 
@@ -48,31 +63,51 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
 
       if (progress >= 1) {
         if (fadeRef.current) window.clearInterval(fadeRef.current);
+        fadeRef.current = null;
+        // Guarantee the player ends up unmuted at full volume,
+        // even if some setVolume calls were dropped mid-fade.
+        try {
+          p.unMute();
+          p.setVolume(targetVolume);
+        } catch {
+          /* noop */
+        }
       }
     }, 30);
   };
 
+  // Play the current track out loud: unmute + (optional) seek + play + fade to full.
+  const playOutLoud = (seek: boolean) => {
+    const p = playerRef.current;
+    if (!p || !playerReadyRef.current) return;
+    try {
+      p.unMute();
+      if (seek) p.seekTo(trackRef.current.startTime || 40, true);
+      p.playVideo();
+      runOneSecondFadeIn(TARGET_VOLUME);
+    } catch {
+      onBlocked(true);
+    }
+  };
+
   useImperativeHandle(ref, () => ({
     unlock: () => {
-      const p = playerRef.current;
-      if (!p) return;
-      try {
-        p.unMute();
-        p.seekTo(track.startTime || 40, true);
-        p.playVideo();
-        runOneSecondFadeIn(80);
-      } catch {
-        onBlocked(true);
-      }
+      unlockedRef.current = true;
+      playOutLoud(true);
     },
     toggle: (on) => {
-      const p = playerRef.current;
-      if (!p) return;
       if (on) {
-        p.unMute();
-        p.playVideo();
-        runOneSecondFadeIn(80);
-      } else p.pauseVideo();
+        unlockedRef.current = true;
+        playOutLoud(false);
+      } else {
+        const p = playerRef.current;
+        if (!p) return;
+        if (fadeRef.current) {
+          window.clearInterval(fadeRef.current);
+          fadeRef.current = null;
+        }
+        p.pauseVideo();
+      }
     },
   }));
 
@@ -102,6 +137,14 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
           },
           events: {
             onReady: (e) => {
+              playerReadyRef.current = true;
+              // If the user already entered (audio unlocked) or playback was
+              // requested before the player finished loading, start LOUD now
+              // instead of staying politely muted at volume 0.
+              if (unlockedRef.current || playingRef.current) {
+                playOutLoud(true);
+                return;
+              }
               e.target.mute();
               e.target.setVolume(0);
               try {
@@ -111,11 +154,29 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
               }
             },
             onStateChange: (e) => {
-              if (e.data === 1) onBlocked(false);
+              if (e.data === 1) {
+                onBlocked(false);
+                // Self-heal: if playback is running but the player is still
+                // muted (e.g. an early command got dropped), restore full sound.
+                if (
+                  unlockedRef.current &&
+                  playingRef.current &&
+                  !fadeRef.current
+                ) {
+                  try {
+                    if (e.target.isMuted?.()) {
+                      e.target.unMute();
+                      e.target.setVolume(TARGET_VOLUME);
+                    }
+                  } catch {
+                    /* noop */
+                  }
+                }
+              }
               if (e.data === 0 && playingRef.current) {
-                e.target.seekTo(track.startTime || 40, true);
+                e.target.seekTo(trackRef.current.startTime || 40, true);
                 e.target.playVideo();
-                runOneSecondFadeIn(80);
+                runOneSecondFadeIn(TARGET_VOLUME);
               }
             },
             onError: () => onBlocked(true),
@@ -146,8 +207,19 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
   useEffect(() => {
     const p = playerRef.current;
     if (!p) return;
-    if (playing) p.playVideo();
-    else p.pauseVideo();
+    if (playing) {
+      // Always restore full sound when playback is (re)requested — this also
+      // covers entering the stage before the player was ready.
+      unlockedRef.current = true;
+      playOutLoud(false);
+    } else {
+      if (fadeRef.current) {
+        window.clearInterval(fadeRef.current);
+        fadeRef.current = null;
+      }
+      p.pauseVideo();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing]);
 
   // Handle Track Changes instantly: seek to middle/chorus & 1s Fade-In
@@ -158,7 +230,10 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
     videoRef.current = track.youtubeId;
 
     try {
-      if (fadeRef.current) window.clearInterval(fadeRef.current);
+      if (fadeRef.current) {
+        window.clearInterval(fadeRef.current);
+        fadeRef.current = null;
+      }
       p.setVolume(0);
       p.loadVideoById({
         videoId: track.youtubeId,
@@ -168,11 +243,12 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
       if (playingRef.current) {
         p.unMute();
         p.playVideo();
-        runOneSecondFadeIn(80);
+        runOneSecondFadeIn(TARGET_VOLUME);
       }
     } catch {
       onBlocked(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [track.youtubeId, track.startTime, onBlocked]);
 
   return (
