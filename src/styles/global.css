@@ -485,6 +485,141 @@ img {
 .gate-copy {
   position: relative;
   z-index: 2;
+  width: min(720px, 92vw);
+  padding: 0 16px;
+}
+
+.gate-logo-svg {
+  width: min(520px, 82vw);
+  margin: 12px auto 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cltr-vector-svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 0 16px rgba(239, 232, 220, 0.3));
+}
+
+.gate-text-container {
+  position: relative;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.gate-credit-text {
+  margin-inline: auto;
+  font-size: clamp(14px, 1.5vw, 18px);
+  color: #e0d8c8;
+  letter-spacing: 0.02em;
+}
+
+.pistachio-text {
+  color: #82d837;
+  font-weight: 700;
+  text-shadow: 0 0 12px rgba(130, 216, 55, 0.55);
+}
+
+.gate-btn-container {
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.enter-text-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  cursor: none;
+  padding: 10px 20px;
+  border-bottom: 1px solid rgba(239, 232, 220, 0.22);
+  transition: all 0.35s var(--ease);
+}
+
+.enter-text-group:hover {
+  border-bottom-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.enter-prominent-text {
+  font-family: "Clash Display", sans-serif;
+  font-size: clamp(22px, 3.5vw, 36px);
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--fg);
+  transition: color 0.3s var(--ease);
+}
+
+.enter-text-group:hover .enter-prominent-text {
+  color: var(--gold);
+}
+
+.enter-scroll-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.88;
+}
+
+.scroll-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  display: inline-block;
+  animation: scrollPulse 1.4s ease-in-out infinite alternate;
+}
+
+@keyframes scrollPulse {
+  0% {
+    transform: translateY(-3px) scale(0.8);
+    opacity: 0.35;
+  }
+  100% {
+    transform: translateY(4px) scale(1.35);
+    opacity: 1;
+  }
+}
+
+.gate-wipe-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50vh;
+  background: linear-gradient(180deg, #11110f 0%, #c4a574 100%);
+  z-index: 95;
+  pointer-events: none;
+  transform: scaleY(0);
+  transform-origin: top;
+  box-shadow: 0 4px 20px rgba(196, 165, 116, 0.4);
+}
+
+.gate-wipe-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50vh;
+  background: linear-gradient(0deg, #070706 0%, #c4a574 100%);
+  z-index: 95;
+  pointer-events: none;
+  transform: scaleY(0);
+  transform-origin: bottom;
+  box-shadow: 0 -4px 20px rgba(196, 165, 116, 0.4);
 }
 
 .gate h1 {

@@ -9,6 +9,7 @@ export type Track = {
   youtubeId: string;
   cover: string;
   note: string;
+  startTime: number; // Start timestamp near middle/chorus (seconds)
 };
 
 export type Scene = {
@@ -33,6 +34,7 @@ export const tracks = {
     youtubeId: "gD3SqwOJ9Sc",
     cover: "/images/cover-nafile.jpg",
     note: "ALLIANCE döneminin kırılma single’ı.",
+    startTime: 42,
   },
   agladim: {
     id: "agladim",
@@ -45,6 +47,7 @@ export const tracks = {
     youtubeId: "eWeWAZiqW0Y",
     cover: "/images/cover-sorma.jpg",
     note: "Duygusal çizginin en çıplak kaydı.",
+    startTime: 38,
   },
   otele: {
     id: "otele",
@@ -57,6 +60,7 @@ export const tracks = {
     youtubeId: "NPcRsdmeSoI",
     cover: "/images/house.jpg",
     note: "İkili imza sound’unun sahne hali.",
+    startTime: 48,
   },
   baknedicem: {
     id: "baknedicem",
@@ -69,6 +73,7 @@ export const tracks = {
     youtubeId: "MArJetRSQiM",
     cover: "/images/alliance.jpg",
     note: "İlk stüdyo albümünün açılış sahnesi.",
+    startTime: 44,
   },
   brapap: {
     id: "brapap",
@@ -81,6 +86,7 @@ export const tracks = {
     youtubeId: "Lj8kloI_3Tw",
     cover: "/images/cover-brapap.jpg",
     note: "CLTR ekibinin sokak manifestosu.",
+    startTime: 52,
   },
   hmdl: {
     id: "hmdl",
@@ -93,6 +99,7 @@ export const tracks = {
     youtubeId: "FinAvFZdwi8",
     cover: "/images/cover-hmdl.jpg",
     note: "Altı isim, tek gece, tek kayıt.",
+    startTime: 58,
   },
   live: {
     id: "live",
@@ -105,6 +112,7 @@ export const tracks = {
     youtubeId: "_D7TQ1MwnHA",
     cover: "/images/studio.jpg",
     note: "Stüdyonun çıplak hali. Canlı.",
+    startTime: 42,
   },
   sorma: {
     id: "sorma",
@@ -117,6 +125,7 @@ export const tracks = {
     youtubeId: "RA9BM5SoASQ",
     cover: "/images/cover-sorma.jpg",
     note: "Gece kapanışı. Soru yok.",
+    startTime: 40,
   },
 } satisfies Record<string, Track>;
 
