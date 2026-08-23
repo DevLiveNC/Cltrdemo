@@ -22,7 +22,9 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
   const playerRef = useRef<YTPlayer | null>(null);
   const fadeRef = useRef<number | null>(null);
   const videoRef = useRef(track.youtubeId);
+  const trackRef = useRef(track);
   const playingRef = useRef(playing);
+  trackRef.current = track;
   playingRef.current = playing;
 
   useImperativeHandle(ref, () => ({
@@ -30,6 +32,10 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
       const p = playerRef.current;
       if (!p) return;
       try {
+        const start = trackRef.current.chorusStart;
+        if (p.getPlayerState() === 0 || p.getCurrentTime() < start) {
+          p.seekTo(start, true);
+        }
         p.unMute();
         p.setVolume(80);
         p.playVideo();
@@ -41,11 +47,19 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
       const p = playerRef.current;
       if (!p) return;
       if (on) {
-        p.unMute();
-        p.playVideo();
+        try {
+          const start = trackRef.current.chorusStart;
+          if (p.getPlayerState() === 0 || p.getCurrentTime() < start) {
+            p.seekTo(start, true);
+          }
+          p.unMute();
+          p.playVideo();
+        } catch {
+          onBlocked(true);
+        }
       } else p.pauseVideo();
     },
-  }));
+  }), [onBlocked]);
 
   useEffect(() => {
     let disposed = false;
@@ -67,6 +81,7 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
             playsinline: 1,
             loop: 1,
             playlist: track.youtubeId,
+            start: track.chorusStart,
             origin: window.location.origin,
             iv_load_policy: 3,
           },
@@ -74,10 +89,14 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
             onReady: (e) => {
               e.target.mute();
               e.target.setVolume(80);
+              e.target.seekTo(trackRef.current.chorusStart, true);
             },
             onStateChange: (e) => {
               if (e.data === 1) onBlocked(false);
-              if (e.data === 0 && playingRef.current) e.target.playVideo();
+              if (e.data === 0 && playingRef.current) {
+                e.target.seekTo(trackRef.current.chorusStart, true);
+                e.target.playVideo();
+              }
             },
             onError: () => onBlocked(true),
           },
@@ -93,7 +112,12 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
       if (!p?.getDuration) return;
       const d = p.getDuration();
       const c = p.getCurrentTime();
-      if (d > 0) onProgress(c / d);
+      if (d > 0) {
+        const start = Math.min(trackRef.current.chorusStart, Math.max(0, d - 1));
+        const span = Math.max(1, d - start);
+        const elapsed = Math.max(0, c - start);
+        onProgress(Math.min(1, elapsed / span));
+      }
     }, 250);
 
     return () => {
@@ -130,7 +154,7 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
         if (v <= 0) {
           if (fadeRef.current) window.clearInterval(fadeRef.current);
           try {
-            p.loadVideoById({ videoId: track.youtubeId, startSeconds: 0 });
+            p.loadVideoById({ videoId: track.youtubeId, startSeconds: track.chorusStart });
             p.setVolume(80);
             if (playingRef.current) {
               p.unMute();
@@ -144,7 +168,7 @@ const AudioEngine = forwardRef<AudioHandle, Props>(function AudioEngine(
     };
 
     fadeThenLoad();
-  }, [track.youtubeId, onBlocked]);
+  }, [track.youtubeId, track.chorusStart, onBlocked]);
 
   return (
     <div className="yt-layer" aria-hidden>

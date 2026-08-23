@@ -4,6 +4,7 @@ interface YTPlayer {
   playVideo: () => void;
   pauseVideo: () => void;
   stopVideo: () => void;
+  seekTo: (seconds: number, allowSeekAhead?: boolean) => void;
   loadVideoById: (opts: { videoId: string; startSeconds?: number }) => void;
   cueVideoById: (opts: { videoId: string; startSeconds?: number }) => void;
   mute: () => void;

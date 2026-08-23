@@ -5,6 +5,7 @@ export type Track = {
   album: string;
   year: string;
   releaseDate: string;
+  chorusStart: number;
   duration: string;
   label: string;
   youtubeId: string;
@@ -45,6 +46,7 @@ export const tracks = {
     album: "NAFİLE — Single",
     year: "2026",
     releaseDate: "09.01.2026",
+    chorusStart: 33,
     duration: "1:54",
     label: "CULTURE",
     youtubeId: "gD3SqwOJ9Sc",
@@ -58,6 +60,7 @@ export const tracks = {
     album: "ÇOK AĞLADIM — Single",
     year: "2025",
     releaseDate: "01.08.2025",
+    chorusStart: 34,
     duration: "1:54",
     label: "CULTURE",
     youtubeId: "eWeWAZiqW0Y",
@@ -71,6 +74,7 @@ export const tracks = {
     album: "İHTİYAÇ YOK OTELE — Single",
     year: "2025",
     releaseDate: "29.08.2025",
+    chorusStart: 0,
     duration: "2:36",
     label: "CULTURE",
     youtubeId: "NPcRsdmeSoI",
@@ -84,6 +88,7 @@ export const tracks = {
     album: "ALLIANCE",
     year: "2026",
     releaseDate: "31.07.2026",
+    chorusStart: 39,
     duration: "2:25",
     label: "CULTURE",
     youtubeId: "MArJetRSQiM",
@@ -97,6 +102,7 @@ export const tracks = {
     album: "BRAPAP — Single",
     year: "2025",
     releaseDate: "24.01.2025",
+    chorusStart: 29,
     duration: "2:23",
     label: "CULTURE",
     youtubeId: "Lj8kloI_3Tw",
@@ -110,6 +116,7 @@ export const tracks = {
     album: "HMDL — Single",
     year: "2025",
     releaseDate: "14.03.2025",
+    chorusStart: 34,
     duration: "3:47",
     label: "CULTURE",
     youtubeId: "FinAvFZdwi8",
@@ -123,6 +130,7 @@ export const tracks = {
     album: "CLTR LIVE · S2 B4",
     year: "2026",
     releaseDate: "01.01.2026",
+    chorusStart: 24,
     duration: "1:42",
     label: "CLTR HOUSE",
     youtubeId: "_D7TQ1MwnHA",
@@ -136,6 +144,7 @@ export const tracks = {
     album: "SORMA — Single",
     year: "2025",
     releaseDate: "21.03.2025",
+    chorusStart: 35,
     duration: "2:09",
     label: "CULTURE",
     youtubeId: "RA9BM5SoASQ",
