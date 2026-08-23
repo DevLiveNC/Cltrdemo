@@ -89,7 +89,7 @@ export function SceneArtists() {
       <h2 className="display sm">
         <KineticLine text="067 / 607" />
       </h2>
-      <div className="grid-2" style={{ height: "auto", marginTop: 28 }}>
+      <div className="grid-2 artists-grid" style={{ height: "auto", marginTop: 28 }}>
         <article className="artist-card">
           <FadeUp delay={0.15}>
             <p className="kicker">Eray Ünal</p>
@@ -302,7 +302,7 @@ export function SceneContent({ index }: { index: number }) {
   const Comp = map[index];
   return (
     <AnimatePresence mode="wait">
-      <motion.div key={index} style={{ height: "100%" }}>
+      <motion.div key={index} className="scene-content">
         <Comp />
       </motion.div>
     </AnimatePresence>

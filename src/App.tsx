@@ -19,6 +19,11 @@ export default function App() {
   const [progress, setProgress] = useState(0);
   const [blocked, setBlocked] = useState(false);
   const [hover, setHover] = useState(false);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(max-width: 900px), (pointer: coarse)").matches
+      : false
+  );
   const busy = useRef(false);
   const indexRef = useRef(0);
   const layerRefs = useRef<(HTMLElement | null)[]>([]);
@@ -31,6 +36,13 @@ export default function App() {
       const img = new Image();
       img.src = s.image;
     });
+  }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 900px), (pointer: coarse)");
+    const update = () => setIsMobile(media.matches);
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
   }, []);
 
   const go = useCallback((next: number, dir?: 1 | -1) => {
@@ -116,9 +128,11 @@ export default function App() {
     const observer = Observer.create({
       type: "wheel,touch",
       wheelSpeed: -1,
-      tolerance: 14,
+      tolerance: isMobile ? 24 : 14,
+      dragMinimum: isMobile ? 36 : 0,
+      lockAxis: true,
       preventDefault: true,
-      ignore: "a, button, input, textarea",
+      ignore: "a, button, input, textarea, .nav, .covers, .family, .artists-grid",
       onDown: () => go(indexRef.current - 1, -1),
       onUp: () => go(indexRef.current + 1, 1),
     });
@@ -147,9 +161,10 @@ export default function App() {
       st.kill();
       window.removeEventListener("keydown", onKey);
     };
-  }, [entered, go]);
+  }, [entered, go, isMobile]);
 
   useEffect(() => {
+    if (isMobile) return;
     const move = (e: PointerEvent) => {
       const el = cursorRef.current;
       if (!el) return;
@@ -159,7 +174,7 @@ export default function App() {
     };
     window.addEventListener("pointermove", move);
     return () => window.removeEventListener("pointermove", move);
-  }, []);
+  }, [isMobile]);
 
   const track = scenes[index].track;
 
@@ -178,10 +193,13 @@ export default function App() {
         onBlocked={setBlocked}
       />
 
-      <div className="stage">
+      <main className="stage">
         {scenes.map((scene, i) => (
           <section
             key={scene.id}
+            id={`scene-${scene.id}`}
+            data-index={i}
+            aria-label={`${scene.index} — ${scene.nav}`}
             className="scene"
             ref={(el) => {
               layerRefs.current[i] = el;
@@ -199,7 +217,7 @@ export default function App() {
             {i === index ? <SceneContent index={index} /> : null}
           </section>
         ))}
-      </div>
+      </main>
 
       {entered ? (
         <>
